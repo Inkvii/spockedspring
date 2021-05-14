@@ -1,11 +1,19 @@
 package verzich.spockedspring.petshop
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.ArraySchema
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import verzich.spockedspring.exceptions.InsufficientFundsException
 import verzich.spockedspring.pet.Pet
 import java.math.BigDecimal
+import javax.validation.Valid
+import javax.validation.constraints.*
 
 @RestController
 @RequestMapping("/petshop", produces = ["application/json"])
@@ -22,14 +30,30 @@ class PetshopController(val petshopService: PetshopService) {
     }
 
     data class PetDto(
+        @NotBlank
+        @Size(min = 1, max = 20, message = "Name length limitation")
         val name: String,
+        @PositiveOrZero
         val age: Int = 0,
+        @Positive
         val purchasingPrice: BigDecimal,
+        @Positive
         val initialMoneyConsumptionPerDay: BigDecimal
     )
 
-    data class RegisterNewPetRequest(val pet: PetDto, val petTypeEnum: PetTypeEnum)
-    data class RegisterNewPetResponse(val pet: PetDto, val petId: Long)
+    data class RegisterNewPetRequest(
+        @NotNull
+        val pet: PetDto,
+        @NotBlank
+        val petTypeEnum: PetTypeEnum
+    )
+
+    data class RegisterNewPetResponse(
+        @NotNull
+        val pet: PetDto,
+        @NotBlank
+        val petId: Long
+    )
 
     @GetMapping("/{petshopId}/browse")
     fun browseAvailablePets(@PathVariable("petshopId") petshopId: Long): ResponseEntity<BrowseAvailablePetsResponse> {
@@ -53,10 +77,27 @@ class PetshopController(val petshopService: PetshopService) {
         }
     }
 
+    @Operation(summary = "Registers new pet to the database under specific petshop")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "New pet is successfully registered in the system.",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        array = ArraySchema(schema = Schema(implementation = RegisterNewPetResponse::class))
+                    )
+                ]
+            ),
+            ApiResponse(responseCode = "400", description = "Bad request", content = [Content()]),
+            ApiResponse(responseCode = "404", description = "Could not find data with current request", content = [Content()])
+        ]
+    )
     @PostMapping("/{petshopId}/register")
     fun registerNewPet(
         @PathVariable("petshopId") petshopId: Long,
-        @RequestBody registerNewPetRequest: RegisterNewPetRequest
+        @RequestBody @Valid registerNewPetRequest: RegisterNewPetRequest
     ): ResponseEntity<RegisterNewPetResponse> {
         log.info("Request: $registerNewPetRequest")
         try {

@@ -26,9 +26,14 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.h2database:h2")
+    // Implementation of spring doc
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.2")
+    // Helper implementation that improves documentation (applies JSR-303 Bean Validation and kotlin specific constraints to document)
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.3.9")
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
+    // Testing library
     testImplementation(group = "org.codehaus.groovy", name = "groovy-all", version = "2.4.15")
     testImplementation(group = "org.spockframework", name = "spock-core", version = "1.1-groovy-2.4")
 }
