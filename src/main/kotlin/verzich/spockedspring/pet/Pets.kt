@@ -1,5 +1,6 @@
 package verzich.spockedspring.pet
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import verzich.spockedspring.AbstractEntity
 import verzich.spockedspring.human.HumanEntity
 import verzich.spockedspring.petshop.PetshopEntity
@@ -12,13 +13,15 @@ import javax.persistence.ManyToOne
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class Pet(
-    protected val name: String,
-    protected var age: Int = 0,
-    protected var initialMoneyConsumptionPerDay: BigDecimal,
+    val name: String,
+    var age: Int = 0,
+    val purchasingPrice: BigDecimal,
+    val initialMoneyConsumptionPerDay: BigDecimal,
     @ManyToOne
-    protected var owner: HumanEntity? = null,
+    var owner: HumanEntity? = null,
     @ManyToOne
-    protected var petshop: PetshopEntity
+    @JsonBackReference
+    var petshop: PetshopEntity
 
 ) : AbstractEntity() {
     abstract fun doSound(): String
@@ -28,17 +31,32 @@ abstract class Pet(
     }
 }
 
-
-class Cat(name: String, age: Int, initialMoneyConsumptionPerDay: BigDecimal, owner: HumanEntity?, petshop: PetshopEntity) :
-    Pet(name, age, initialMoneyConsumptionPerDay, owner, petshop) {
+@Entity
+class Cat(
+    name: String,
+    age: Int,
+    purchasingPrice: BigDecimal,
+    initialMoneyConsumptionPerDay: BigDecimal,
+    owner: HumanEntity? = null,
+    petshop: PetshopEntity
+) :
+    Pet(name, age, purchasingPrice, initialMoneyConsumptionPerDay, owner, petshop) {
 
     override fun doSound(): String {
         return "Meow"
     }
 }
 
-class Dog(name: String, age: Int, initialMoneyConsumptionPerDay: BigDecimal, owner: HumanEntity?, petshop: PetshopEntity) :
-    Pet(name, age, initialMoneyConsumptionPerDay, owner, petshop) {
+@Entity
+class Dog(
+    name: String,
+    age: Int,
+    purchasingPrice: BigDecimal,
+    initialMoneyConsumptionPerDay: BigDecimal,
+    owner: HumanEntity? = null,
+    petshop: PetshopEntity
+) :
+    Pet(name, age, purchasingPrice, initialMoneyConsumptionPerDay, owner, petshop) {
     override fun doSound(): String {
         when {
             age < 0 -> {

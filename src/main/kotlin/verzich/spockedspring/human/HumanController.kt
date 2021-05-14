@@ -18,7 +18,7 @@ class HumanController(
 
     @PostMapping("/register", consumes = ["application/json"])
     fun registerHuman(@RequestBody registerHumanRequest: RegisterHumanRequest): ResponseEntity<RegisterHumanResponse> {
-        val id = humanService.registerHuman(registerHumanRequest)
+        val id = humanService.registerHumanIfNotFound(registerHumanRequest)
         return ResponseEntity.ok(RegisterHumanResponse(id))
     }
 }
