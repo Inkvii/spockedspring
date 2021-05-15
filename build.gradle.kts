@@ -38,12 +38,21 @@ dependencies {
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-    // Testing libraries mandatory for spock
-    testImplementation(group = "org.codehaus.groovy", name = "groovy-all", version = "2.4.15")
-    testImplementation(group = "org.spockframework", name = "spock-core", version = "1.1-groovy-2.4")
+    // Kotest
+    val kotestVersion = "4.5.0"
+    testImplementation("io.kotest:kotest-framework-engine:$kotestVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    // Kotest extension for using springboottest
+    testImplementation("io.kotest:kotest-extensions-spring:4.4.3")
+    // Kotest extension for using AbstractProjectConfig which declares kotest configuration globally
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.0.0")
 
-    // For springboot test to work add this dependency
-    testImplementation("org.spockframework:spock-spring:1.1-groovy-2.4")
+    // Mokk for mocking
+    testImplementation("io.mockk:mockk:1.11.0")
+
+    // Optional kotest libraries
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-property:$kotestVersion")
 }
 allOpen {
     annotation("javax.persistence.Entity")
@@ -56,4 +65,7 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "11"
     }
+}
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
