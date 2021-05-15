@@ -1,10 +1,7 @@
 package verzich.spockedspring.human
 
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
 
 @RestController
@@ -20,5 +17,15 @@ class HumanController(
     fun registerHuman(@RequestBody registerHumanRequest: RegisterHumanRequest): ResponseEntity<RegisterHumanResponse> {
         val id = humanService.registerHumanIfNotFound(registerHumanRequest)
         return ResponseEntity.ok(RegisterHumanResponse(id))
+    }
+
+    @GetMapping("/{humanId}/soundboard")
+    fun soundboard(@PathVariable("humanId") humanId: Long): ResponseEntity<List<String>> {
+        try {
+            val resultList = humanService.doPetSounds(humanId)
+            return ResponseEntity.ok(resultList)
+        } catch (e: IllegalArgumentException) {
+            return ResponseEntity.notFound().build()
+        }
     }
 }

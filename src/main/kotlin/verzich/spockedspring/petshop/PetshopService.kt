@@ -33,7 +33,7 @@ class PetshopService(
 
     @Transactional
     fun buyPet(buyPetRequest: PetshopController.BuyPetRequest): PetshopController.BuyPetResponse {
-        val pet = petRepository.findById(buyPetRequest.chosenPetId).orElseThrow { IllegalArgumentException("Bad pet id") }
+        val pet = petRepository.findByIdAndOwnerIsNull(buyPetRequest.chosenPetId).orElseThrow { IllegalArgumentException("Bad pet id") }
         val human = humanRepository.findById(buyPetRequest.humanId).orElseThrow { IllegalArgumentException("Bad human id") }
 
         if (!petshopAdministrationService.checkHumanCanAffordBuyingPet(human, pet)) {

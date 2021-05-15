@@ -29,6 +29,10 @@ abstract class Pet(
     fun calculateMoneyConsumptionPerDay(): BigDecimal {
         return (initialMoneyConsumptionPerDay * (age / 10 + 1).toBigDecimal()).setScale(2)
     }
+
+    fun advanceInAge() {
+        age += 1
+    }
 }
 
 @Entity
