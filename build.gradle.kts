@@ -23,19 +23,27 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.h2database:h2")
+
+    //Kotlin libraries
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.h2database:h2")
+
     // Implementation of spring doc
     implementation("org.springdoc:springdoc-openapi-ui:1.5.2")
+
     // Helper implementation that improves documentation (applies JSR-303 Bean Validation and kotlin specific constraints to document)
     implementation("org.springdoc:springdoc-openapi-kotlin:1.3.9")
+    // Dependency that assures it to be runnable on non-embedded tomcat
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-    // Testing library
+    // Testing libraries mandatory for spock
     testImplementation(group = "org.codehaus.groovy", name = "groovy-all", version = "2.4.15")
     testImplementation(group = "org.spockframework", name = "spock-core", version = "1.1-groovy-2.4")
+
+    // For springboot test to work add this dependency
+    testImplementation("org.spockframework:spock-spring:1.1-groovy-2.4")
 }
 allOpen {
     annotation("javax.persistence.Entity")
@@ -48,8 +56,4 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "11"
     }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
