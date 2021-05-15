@@ -17,9 +17,10 @@ import javax.validation.constraints.*
 
 @RestController
 @RequestMapping("/petshop", produces = ["application/json"])
-class PetshopController(val petshopService: PetshopService) {
+class PetshopController(
+    val petshopService: PetshopService,
+) {
     val log = LoggerFactory.getLogger(this.javaClass)
-
 
     data class BrowseAvailablePetsResponse(val availablePets: List<Pet>)
     data class BuyPetRequest(val humanId: Long, val chosenPetId: Long)
@@ -30,14 +31,24 @@ class PetshopController(val petshopService: PetshopService) {
     }
 
     data class PetDto(
-        @NotBlank
-        @Size(min = 1, max = 20, message = "Name length limitation")
+        @get:NotBlank
+        @get:Size(min = 1, max = 20, message = "Name length limitation")
+        @Schema(description = "Name of the pet", example = "Mourek")
         val name: String,
-        @PositiveOrZero
+        @get:PositiveOrZero
+        @Schema(description = "Age of the pet which then determines how much it will cost on daily maintenance", example = "2")
         val age: Int = 0,
-        @Positive
+        @get:Positive
+        @Schema(
+            description = "Purchasing price from petshop store. Price is predetermined in the petshop and will not change",
+            example = "101.58"
+        )
         val purchasingPrice: BigDecimal,
-        @Positive
+        @get:Positive
+        @Schema(
+            description = "Initial money consumption per day which is set as a base for calculating daily costs formula.",
+            example = "5.247"
+        )
         val initialMoneyConsumptionPerDay: BigDecimal
     )
 
