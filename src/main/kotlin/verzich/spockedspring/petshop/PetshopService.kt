@@ -12,10 +12,10 @@ import javax.transaction.Transactional
 
 @Service
 class PetshopService(
-    var petshopRepository: PetshopRepository,
-    var petRepository: PetRepository,
-    var humanRepository: HumanRepository,
-    var petshopAdministrationService: PetshopAdministrationService
+    val petshopRepository: PetshopRepository,
+    val petRepository: PetRepository,
+    val humanRepository: HumanRepository,
+    val petshopAdministrationService: PetshopAdministrationService
 ) {
     val log = LoggerFactory.getLogger(this.javaClass)
 
