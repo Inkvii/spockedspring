@@ -31,20 +31,20 @@ class PetshopController(
     }
 
     data class PetDto(
-        @get:NotBlank
-        @get:Size(min = 1, max = 20, message = "Name length limitation")
+        @field:NotBlank
+        @field:Size(min = 1, max = 20, message = "Name length limitation")
         @Schema(description = "Name of the pet", example = "Mourek")
         val name: String,
-        @get:PositiveOrZero
+        @field:PositiveOrZero
         @Schema(description = "Age of the pet which then determines how much it will cost on daily maintenance", example = "2")
         val age: Int = 0,
-        @get:Positive
+        @field:Positive
         @Schema(
             description = "Purchasing price from petshop store. Price is predetermined in the petshop and will not change",
             example = "101.58"
         )
         val purchasingPrice: BigDecimal,
-        @get:Positive
+        @field:Positive
         @Schema(
             description = "Initial money consumption per day which is set as a base for calculating daily costs formula.",
             example = "5.247"
@@ -53,16 +53,17 @@ class PetshopController(
     )
 
     data class RegisterNewPetRequest(
-        @NotNull
+        @field:Valid
         val pet: PetDto,
-        @NotBlank
-        val petTypeEnum: PetTypeEnum
+        val petTypeEnum: PetTypeEnum,
+        @field:Positive
+        val number: Int
     )
 
     data class RegisterNewPetResponse(
-        @NotNull
+        @field:NotNull
         val pet: PetDto,
-        @NotBlank
+        @field:NotBlank
         val petId: Long
     )
 
@@ -108,7 +109,7 @@ class PetshopController(
     @PostMapping("/{petshopId}/register")
     fun registerNewPet(
         @PathVariable("petshopId") petshopId: Long,
-        @RequestBody @Valid registerNewPetRequest: RegisterNewPetRequest
+        @Valid @RequestBody registerNewPetRequest: RegisterNewPetRequest
     ): ResponseEntity<RegisterNewPetResponse> {
         log.info("Request: $registerNewPetRequest")
         try {
